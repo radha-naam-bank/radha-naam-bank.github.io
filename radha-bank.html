@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Radha Naam Bank&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Firebase SDKs --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"&gt;&lt;/script&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-family: Georgia, serif;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: linear-gradient(to bottom, #fff5e1, #ffe4b5);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>header {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: #800000;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: gold;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 28px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>button {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 15px 25px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: #ff9933;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 18px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 15px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>input {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 5px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;header&gt;🌸 Radha Naam Bank 🌸&lt;/header&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div id="login"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;h3&gt;Login&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;input type="email" id="email" placeholder="Enter Email"&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;input type="password" id="password" placeholder="Enter Password"&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;button onclick="signup()"&gt;Signup&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;button onclick="login()"&gt;Login&lt;/button&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div id="dashboard" style="display:none;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;h2&gt;राधा&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;button onclick="writeRadha()"&gt;Write Radha&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;h3&gt;Your Count: &lt;span id="userCount"&gt;0&lt;/span&gt;&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;h3&gt;Global Count: &lt;span id="globalCount"&gt;0&lt;/span&gt;&lt;/h3&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const firebaseConfig = {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>apiKey: "AIzaSyCjWR3iIF07Ohj22bjzv5QIPFKL55t1wB0",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>authDomain: "radha-naam-bank-abec4.firebaseapp.com",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>projectId: "radha-naam-bank-abec4",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>storageBucket: "radha-naam-bank-abec4.firebasestorage.app",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>messagingSenderId: "625272113751",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>appId: "1:625272113751:web:607d6c0544fbba4eb2f112"</p>
+<p class="p1"><span class="Apple-converted-space">  </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>firebase.initializeApp(firebaseConfig);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const auth = firebase.auth();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const db = firebase.firestore();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>let currentUser;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>function signup() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const email = document.getElementById('email').value;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const password = document.getElementById('password').value;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>auth.createUserWithEmailAndPassword(email, password)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.then(() =&gt; alert("Signup successful!"))</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.catch(error =&gt; alert(error.message));</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>function login() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const email = document.getElementById('email').value;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const password = document.getElementById('password').value;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>auth.signInWithEmailAndPassword(email, password)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.then(() =&gt; alert("Login successful!"))</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.catch(error =&gt; alert(error.message));</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>auth.onAuthStateChanged(user =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (user) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>currentUser = user;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("login").style.display = "none";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("dashboard").style.display = "block";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>loadCounts();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>async function writeRadha() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const userRef = db.collection("users").doc(currentUser.uid);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const globalRef = db.collection("stats").doc("global");</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>await db.runTransaction(async (transaction) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const userDoc = await transaction.get(userRef);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const globalDoc = await transaction.get(globalRef);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>let userCount = userDoc.exists ? userDoc.data().count : 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>let globalCount = globalDoc.exists ? globalDoc.data().count : 0;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>transaction.set(userRef, { count: userCount + 1 });</p>
+<p class="p1"><span class="Apple-converted-space">      </span>transaction.set(globalRef, { count: globalCount + 1 });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>loadCounts();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>async function loadCounts() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const userDoc = await db.collection("users").doc(currentUser.uid).get();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const globalDoc = await db.collection("stats").doc("global").get();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("userCount").innerText =</p>
+<p class="p1"><span class="Apple-converted-space">      </span>userDoc.exists ? userDoc.data().count : 0;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("globalCount").innerText =</p>
+<p class="p1"><span class="Apple-converted-space">      </span>globalDoc.exists ? globalDoc.data().count : 0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>

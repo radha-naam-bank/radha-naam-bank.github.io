@@ -9,22 +9,31 @@
   <style>
     body { 
       margin: 0; font-family: 'Georgia', serif; 
-      background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1623910541743-40a768c6883a?q=80&w=2000&auto=format&fit=crop');
-      background-size: cover; background-attachment: fixed; text-align: center; color: #4a2c2a; 
+      /* Updated Serene Ganga Background */
+      background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1590766940554-634a7ed41450?q=80&w=2000&auto=format&fit=crop');
+      background-size: cover; background-position: center; background-attachment: fixed; text-align: center; color: #4a2c2a; 
     }
     header { background: #800000; color: gold; padding: 15px; font-size: 28px; border-bottom: 4px solid #d4af37; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-    .card { background: rgba(255, 255, 255, 0.92); padding: 25px; margin: 15px auto; width: 360px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+    .card { background: rgba(255, 255, 255, 0.88); padding: 25px; margin: 15px auto; width: 360px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.3); }
     h2 { color: #800000; font-size: 45px; margin: 10px 0; }
     input { padding: 12px; margin: 10px 0; width: 85%; border-radius: 10px; border: 1px solid #dcc; font-size: 16px; }
     .btn-main { padding: 15px; background: #800000; color: gold; border: 2px solid gold; font-size: 18px; border-radius: 15px; cursor: pointer; width: 80%; font-weight: bold; }
-    .tab-btn { padding: 8px 12px; background: #eee; border: none; cursor: pointer; margin: 5px; border-radius: 8px; font-weight: bold; font-size: 13px; }
+    .tab-btn { padding: 10px 15px; background: #eee; border: none; cursor: pointer; margin: 5px; border-radius: 8px; font-weight: bold; }
     .tab-btn.active { background: #800000; color: white; }
-    .controls { margin: 10px; font-size: 24px; }
-    .control-icon { cursor: pointer; margin: 0 10px; opacity: 0.3; transition: 0.3s; }
-    .control-icon.active { opacity: 1; filter: drop-shadow(0 0 5px gold); }
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #fdf2d5; padding: 10px; border-radius: 15px; margin-top: 15px; border: 1px solid #e0c097; }
-    .reset-btn { font-size: 11px; color: #800000; cursor: pointer; text-decoration: underline; background: none; border: none; }
-    .hindi-display { font-size: 40px; color: #800000; height: 50px; display: block; }
+    .controls { margin: 10px; font-size: 30px; }
+    .control-icon { cursor: pointer; margin: 0 10px; opacity: 0.2; transition: 0.3s; }
+    .control-icon.active { opacity: 1; filter: drop-shadow(0 0 8px gold); }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #fdf2d5; padding: 15px; border-radius: 15px; margin-top: 15px; border: 1px solid #e0c097; }
+    
+    /* Bigger Reset Button */
+    .reset-btn { 
+      margin-top: 15px; padding: 8px 20px; background: #800000; color: white; 
+      border: none; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .reset-btn:hover { background: #a00000; }
+    
+    .hindi-display { font-size: 40px; color: #800000; height: 55px; display: block; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -48,32 +57,32 @@
         </div>
 
         <div id="tabs">
-            <button class="tab-btn active" id="btnTab" onclick="showMode('click')">Jaap (Click)</button>
-            <button class="tab-btn" id="writeTab" onclick="showMode('write')">Likhit (Type)</button>
+            <button class="tab-btn active" id="btnTab" onclick="showMode('click')">Jaap</button>
+            <button class="tab-btn" id="writeTab" onclick="showMode('write')">Likhit Naam</button>
         </div>
 
         <div id="clickMode">
             <h2>राधा</h2>
             <button class="btn-main" onclick="addCount('jaap')">Click for Radha naam</button>
             <div class="stats-grid">
-                <div><small>Session</small><br><b id="sJaap">0</b></div>
-                <div><small>Total</small><br><b id="uJaap">0</b></div>
+                <div><small>Session</small><br><b id="sJaap" style="font-size:22px;">0</b></div>
+                <div><small>Lifetime</small><br><b id="uJaap" style="font-size:22px;">0</b></div>
             </div>
-            <button class="reset-btn" onclick="resetSession('jaap')">Reset Session</button>
+            <button class="reset-btn" onclick="resetSession('jaap')">Reset Session Count ↻</button>
         </div>
 
         <div id="writeMode" style="display:none;">
             <span class="hindi-display" id="hindiText"></span>
             <input type="text" id="radhaInput" placeholder="Type 'Radha' & Enter" onkeypress="checkEnter(event)" style="text-align:center; font-size:20px;">
             <div class="stats-grid">
-                <div><small>Session</small><br><b id="sWrite">0</b></div>
-                <div><small>Total</small><br><b id="uWrite">0</b></div>
+                <div><small>Session</small><br><b id="sWrite" style="font-size:22px;">0</b></div>
+                <div><small>Lifetime</small><br><b id="uWrite" style="font-size:22px;">0</b></div>
             </div>
-            <button class="reset-btn" onclick="resetSession('write')">Reset Session</button>
+            <button class="reset-btn" onclick="resetSession('write')">Reset Session Count ↻</button>
         </div>
         
-        <div style="margin-top:20px; font-size: 20px; color: #800000; font-weight: bold;">
-            Global Total: <span id="gTotal">0</span>
+        <div style="margin-top:20px; font-size: 20px; color: #800000; font-weight: bold; background: gold; padding: 10px; border-radius: 10px;">
+            Global Bank Total: <span id="gTotal">0</span>
         </div>
         <button onclick="logout()" style="margin-top:20px; border:none; background:none; color:gray; cursor:pointer; font-size: 12px;">Logout</button>
     </div>
@@ -118,8 +127,10 @@
   }
 
   function resetSession(type) {
-    session[type] = 0;
-    document.getElementById('s' + type.charAt(0).toUpperCase() + type.slice(1)).innerText = 0;
+    if(confirm("Are you sure you want to reset your session count back to 0?")) {
+        session[type] = 0;
+        document.getElementById('s' + type.charAt(0).toUpperCase() + type.slice(1)).innerText = 0;
+    }
   }
 
   function checkEnter(e) {
@@ -135,7 +146,7 @@
   }
 
   async function addCount(type) {
-    if (controls.sound) bell.play();
+    if (controls.sound) { bell.currentTime = 0; bell.play(); }
     if (controls.vibrate && navigator.vibrate) navigator.vibrate(100);
 
     session[type]++;

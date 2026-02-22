@@ -8,24 +8,23 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <style>
     body { 
-      margin: 0; 
-      font-family: 'Georgia', serif; 
-      /* Sacred Background Image */
-      background: linear-gradient(rgba(255,245,225,0.8), rgba(255,245,225,0.8)), url('https://images.unsplash.com/photo-1583074026213-90926799f91a?q=80&w=1000&auto=format&fit=crop');
-      background-size: cover;
-      background-attachment: fixed;
-      text-align: center; 
-      color: #4a2c2a; 
+      margin: 0; font-family: 'Georgia', serif; 
+      background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1623910541743-40a768c6883a?q=80&w=2000&auto=format&fit=crop');
+      background-size: cover; background-attachment: fixed; text-align: center; color: #4a2c2a; 
     }
-    header { background: #800000; color: gold; padding: 20px; font-size: 32px; border-bottom: 5px solid #d4af37; }
-    .card { background: rgba(255, 255, 255, 0.9); padding: 30px; margin: 20px auto; width: 350px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-    h2 { color: #800000; font-size: 50px; margin: 10px 0; }
-    input { padding: 12px; margin: 10px 0; width: 90%; border: 1px solid #dcc; border-radius: 8px; font-size: 16px; }
-    .btn-primary { padding: 15px; background: #ff9933; border: none; font-size: 18px; color: white; font-weight: bold; border-radius: 10px; cursor: pointer; width: 100%; margin-top: 10px; }
-    .tab-btn { padding: 10px 20px; background: #eee; border: none; cursor: pointer; margin: 5px; border-radius: 5px; }
+    header { background: #800000; color: gold; padding: 15px; font-size: 28px; border-bottom: 4px solid #d4af37; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+    .card { background: rgba(255, 255, 255, 0.92); padding: 25px; margin: 15px auto; width: 360px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+    h2 { color: #800000; font-size: 45px; margin: 10px 0; }
+    input { padding: 12px; margin: 10px 0; width: 85%; border-radius: 10px; border: 1px solid #dcc; font-size: 16px; }
+    .btn-main { padding: 15px; background: #800000; color: gold; border: 2px solid gold; font-size: 18px; border-radius: 15px; cursor: pointer; width: 80%; font-weight: bold; }
+    .tab-btn { padding: 8px 12px; background: #eee; border: none; cursor: pointer; margin: 5px; border-radius: 8px; font-weight: bold; font-size: 13px; }
     .tab-btn.active { background: #800000; color: white; }
-    .write-area { font-size: 24px; padding: 15px; width: 80%; border: 2px solid #800000; border-radius: 10px; text-align: center; }
-    .hindi-text { font-size: 40px; color: #800000; display: block; height: 50px; margin-bottom: 10px; }
+    .controls { margin: 10px; font-size: 24px; }
+    .control-icon { cursor: pointer; margin: 0 10px; opacity: 0.3; transition: 0.3s; }
+    .control-icon.active { opacity: 1; filter: drop-shadow(0 0 5px gold); }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #fdf2d5; padding: 10px; border-radius: 15px; margin-top: 15px; border: 1px solid #e0c097; }
+    .reset-btn { font-size: 11px; color: #800000; cursor: pointer; text-decoration: underline; background: none; border: none; }
+    .hindi-display { font-size: 40px; color: #800000; height: 50px; display: block; }
   </style>
 </head>
 <body>
@@ -36,34 +35,47 @@
     <h3 id="authTitle">Devotee Login</h3>
     <input type="email" id="email" placeholder="Email Address">
     <input type="password" id="password" placeholder="Password">
-    <button id="authBtn" class="btn-primary" onclick="handleAuth()">Login</button>
-    <p onclick="toggleAuth()" id="toggleLink" style="cursor:pointer; text-decoration:underline;">New Devotee? Signup</p>
-    <p onclick="forgotPassword()" style="cursor:pointer; color: blue; font-size: 13px;">Forgot Password?</p>
+    <button class="btn-main" style="background:#ff9933; border:none; color:white; width: 100%;" onclick="handleAuth()">Login</button>
+    <p onclick="toggleAuth()" id="toggleLink" style="cursor:pointer; text-decoration:underline; font-size:14px; margin-top:15px;">New Devotee? Signup</p>
+    <p onclick="forgotPassword()" style="cursor:pointer; color: #0000EE; font-size: 12px;">Forgot Password?</p>
 </div>
 
 <div id="bankSection" style="display:none;">
-    <div class="card" style="width: 80%; max-width: 500px;">
+    <div class="card">
+        <div class="controls">
+            <span id="soundIcon" class="control-icon" onclick="toggleControl('sound')">🔔</span>
+            <span id="vibrateIcon" class="control-icon" onclick="toggleControl('vibrate')">📱</span>
+        </div>
+
         <div id="tabs">
-            <button class="tab-btn active" id="btnTab" onclick="showMode('click')">Click Mode</button>
-            <button class="tab-btn" id="writeTab" onclick="showMode('write')">Writing Mode</button>
+            <button class="tab-btn active" id="btnTab" onclick="showMode('click')">Jaap (Click)</button>
+            <button class="tab-btn" id="writeTab" onclick="showMode('write')">Likhit (Type)</button>
         </div>
 
         <div id="clickMode">
             <h2>राधा</h2>
-            <button class="btn-primary" style="background:#800000; width: 200px;" onclick="writeRadha()">Write Radha</button>
+            <button class="btn-main" onclick="addCount('jaap')">Click for Radha naam</button>
+            <div class="stats-grid">
+                <div><small>Session</small><br><b id="sJaap">0</b></div>
+                <div><small>Total</small><br><b id="uJaap">0</b></div>
+            </div>
+            <button class="reset-btn" onclick="resetSession('jaap')">Reset Session</button>
         </div>
 
         <div id="writeMode" style="display:none;">
-            <span class="hindi-text" id="hindiDisplay"></span>
-            <input type="text" id="radhaInput" class="write-area" placeholder="Type 'Radha' & hit Enter" onkeypress="checkEnter(event)">
-            <p style="font-size: 12px;">Type "Radha" then press Enter key</p>
+            <span class="hindi-display" id="hindiText"></span>
+            <input type="text" id="radhaInput" placeholder="Type 'Radha' & Enter" onkeypress="checkEnter(event)" style="text-align:center; font-size:20px;">
+            <div class="stats-grid">
+                <div><small>Session</small><br><b id="sWrite">0</b></div>
+                <div><small>Total</small><br><b id="uWrite">0</b></div>
+            </div>
+            <button class="reset-btn" onclick="resetSession('write')">Reset Session</button>
         </div>
-
-        <div style="background: #fdf2d5; padding: 15px; border-radius: 10px; margin-top: 20px;">
-            <p>Your Total: <b id="uCount">0</b></p>
-            <p>Global Total: <b id="gCount">0</b></p>
+        
+        <div style="margin-top:20px; font-size: 20px; color: #800000; font-weight: bold;">
+            Global Total: <span id="gTotal">0</span>
         </div>
-        <button onclick="logout()" style="margin-top:20px; border:none; background:none; color:gray; cursor:pointer;">Logout</button>
+        <button onclick="logout()" style="margin-top:20px; border:none; background:none; color:gray; cursor:pointer; font-size: 12px;">Logout</button>
     </div>
 </div>
 
@@ -81,29 +93,22 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
+  let session = { jaap: 0, write: 0 };
+  let controls = { sound: false, vibrate: false };
   let isSignupMode = false;
+
+  const bell = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+
+  function toggleControl(type) {
+    controls[type] = !controls[type];
+    document.getElementById(type + 'Icon').classList.toggle('active');
+  }
 
   function toggleAuth() {
     isSignupMode = !isSignupMode;
     document.getElementById('authTitle').innerText = isSignupMode ? "Create Account" : "Devotee Login";
-    document.getElementById('authBtn').innerText = isSignupMode ? "Signup" : "Login";
-    document.getElementById('toggleLink').innerText = isSignupMode ? "Already a Devotee? Login" : "New Devotee? Signup";
+    document.getElementById('toggleLink').innerText = isSignupMode ? "Login instead" : "New Devotee? Signup";
   }
-
-  function forgotPassword() {
-    const email = document.getElementById('email').value;
-    if(!email) { alert("Please enter your email first"); return; }
-    auth.sendPasswordResetEmail(email).then(() => alert("Reset link sent to your email!")).catch(e => alert(e.message));
-  }
-
-  function handleAuth() {
-    const email = document.getElementById('email').value.trim();
-    const pass = document.getElementById('password').value;
-    if(isSignupMode) auth.createUserWithEmailAndPassword(email, pass).catch(e => alert(e.message));
-    else auth.signInWithEmailAndPassword(email, pass).catch(e => alert(e.message));
-  }
-
-  function logout() { auth.signOut().then(() => location.reload()); }
 
   function showMode(mode) {
     document.getElementById('clickMode').style.display = mode === 'click' ? 'block' : 'none';
@@ -112,19 +117,52 @@
     document.getElementById('writeTab').className = mode === 'write' ? 'tab-btn active' : 'tab-btn';
   }
 
+  function resetSession(type) {
+    session[type] = 0;
+    document.getElementById('s' + type.charAt(0).toUpperCase() + type.slice(1)).innerText = 0;
+  }
+
   function checkEnter(e) {
     if(e.key === 'Enter') {
         const val = document.getElementById('radhaInput').value.toLowerCase().trim();
         if(val === 'radha') {
-            document.getElementById('hindiDisplay').innerText = "राधा";
+            document.getElementById('hindiText').innerText = "राधा";
             document.getElementById('radhaInput').value = "";
-            writeRadha();
-            setTimeout(() => { document.getElementById('hindiDisplay').innerText = ""; }, 1000);
-        } else {
-            alert("Please type 'Radha' correctly");
-            document.getElementById('radhaInput').value = "";
-        }
+            addCount('write');
+            setTimeout(() => { document.getElementById('hindiText').innerText = ""; }, 700);
+        } else { document.getElementById('radhaInput').value = ""; }
     }
+  }
+
+  async function addCount(type) {
+    if (controls.sound) bell.play();
+    if (controls.vibrate && navigator.vibrate) navigator.vibrate(100);
+
+    session[type]++;
+    const uid = auth.currentUser.uid;
+    const uRef = db.collection("users").doc(uid);
+    const gRef = db.collection("stats").doc("global");
+
+    await db.runTransaction(async (t) => {
+        const uDoc = await t.get(uRef);
+        const gDoc = await t.get(gRef);
+        let uData = uDoc.exists ? uDoc.data() : { jaap: 0, write: 0 };
+        uData[type] = (uData[type] || 0) + 1;
+        t.set(uRef, uData);
+        t.set(gRef, { count: (gDoc.exists ? gDoc.data().count : 0) + 1 });
+    });
+    updateDisplay(uid);
+  }
+
+  async function updateDisplay(uid) {
+    const uDoc = await db.collection("users").doc(uid).get();
+    const gDoc = await db.collection("stats").doc("global").get();
+    const uData = uDoc.exists ? uDoc.data() : { jaap: 0, write: 0 };
+    document.getElementById('uJaap').innerText = uData.jaap || 0;
+    document.getElementById('uWrite').innerText = uData.write || 0;
+    document.getElementById('sJaap').innerText = session.jaap;
+    document.getElementById('sWrite').innerText = session.write;
+    document.getElementById('gTotal').innerText = gDoc.exists ? gDoc.data().count : 0;
   }
 
   auth.onAuthStateChanged(user => {
@@ -135,24 +173,17 @@
     }
   });
 
-  async function writeRadha() {
-    const uid = auth.currentUser.uid;
-    const uRef = db.collection("users").doc(uid);
-    const gRef = db.collection("stats").doc("global");
-    await db.runTransaction(async (t) => {
-        const uDoc = await t.get(uRef);
-        const gDoc = await t.get(gRef);
-        t.set(uRef, { count: (uDoc.exists ? uDoc.data().count : 0) + 1 });
-        t.set(gRef, { count: (gDoc.exists ? gDoc.data().count : 0) + 1 });
-    });
-    updateDisplay(uid);
+  function handleAuth() {
+    const email = document.getElementById('email').value.trim();
+    const pass = document.getElementById('password').value;
+    if(isSignupMode) auth.createUserWithEmailAndPassword(email, pass).catch(e => alert(e.message));
+    else auth.signInWithEmailAndPassword(email, pass).catch(e => alert(e.message));
   }
-
-  async function updateDisplay(uid) {
-    const uDoc = await db.collection("users").doc(uid).get();
-    const gDoc = await db.collection("stats").doc("global").get();
-    document.getElementById('uCount').innerText = uDoc.exists ? uDoc.data().count : 0;
-    document.getElementById('gCount').innerText = gDoc.exists ? gDoc.data().count : 0;
+  function logout() { auth.signOut().then(() => location.reload()); }
+  function forgotPassword() {
+    const email = document.getElementById('email').value;
+    if(!email) { alert("Enter email first"); return; }
+    auth.sendPasswordResetEmail(email).then(() => alert("Reset link sent!"));
   }
 </script>
 </body>

@@ -7,36 +7,48 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <style>
-    body { margin: 0; font-family: Georgia, serif; background: linear-gradient(to bottom, #fff5e1, #ffe4b5); text-align: center; }
-    header { background: #800000; color: gold; padding: 20px; font-size: 28px; }
-    button { padding: 15px 25px; background: #ff9933; border: none; font-size: 18px; margin: 15px; cursor: pointer; border-radius: 8px; color: white; font-weight: bold; }
-    input { padding: 10px; margin: 5px; width: 250px; border-radius: 5px; border: 1px solid #ccc; }
-    #dashboard { padding: 20px; }
-    h2 { font-size: 50px; color: #800000; margin: 20px 0; }
+    body { margin: 0; font-family: 'Georgia', serif; background: #fff5e1; text-align: center; color: #4a2c2a; }
+    header { background: #800000; color: gold; padding: 25px; font-size: 32px; border-bottom: 5px solid #d4af37; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .card { background: white; padding: 30px; margin: 30px auto; width: 320px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e0c097; }
+    h2 { color: #800000; font-size: 60px; margin: 10px 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+    input { padding: 12px; margin: 10px 0; width: 90%; border: 1px solid #dcc; border-radius: 8px; font-size: 16px; background: #fffaf0; }
+    .btn-primary { padding: 15px 30px; background: #ff9933; border: none; font-size: 18px; color: white; font-weight: bold; border-radius: 10px; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 10px; }
+    .btn-primary:hover { background: #e68a00; transform: scale(1.02); }
+    .btn-write { padding: 25px 50px; background: #800000; color: gold; font-size: 24px; border: 3px solid gold; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 15px rgba(128,0,0,0.3); margin: 20px 0; }
+    .btn-write:active { transform: scale(0.95); }
+    .toggle-text { color: #800000; cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: 15px; display: block; }
+    .stats-box { background: #fdf2d5; padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px dashed #800000; }
   </style>
 </head>
 <body>
 
 <header>🌸 Radha Naam Bank 🌸</header>
 
-<div id="login">
-  <h3>Welcome, Devotee</h3>
-  <input type="email" id="email" placeholder="Enter Email"><br>
-  <input type="password" id="password" placeholder="Enter Password"><br>
-  <button onclick="signup()">Signup</button>
-  <button onclick="login()">Login</button>
+<div id="authSection" class="card">
+    <h3 id="authTitle">Welcome, Devotee</h3>
+    <input type="email" id="email" placeholder="Email Address">
+    <input type="password" id="password" placeholder="Password (6+ characters)">
+    
+    <button id="authBtn" class="btn-primary" onclick="handleAuth()">Login</button>
+    
+    <span id="toggleLink" class="toggle-text" onclick="toggleAuth()">New Devotee? Create an Account</span>
 </div>
 
-<div id="dashboard" style="display:none;">
-  <h2>राधा</h2>
-  <button onclick="writeRadha()">Write Radha</button>
-  <h3>Your Count: <span id="userCount">0</span></h3>
-  <h3>Global Count: <span id="globalCount">0</span></h3>
-  <br>
-  <button onclick="logout()" style="background: #333; font-size: 14px;">Logout</button>
+<div id="bankSection" class="card" style="display:none;">
+    <p>Chant and Click</p>
+    <h2>राधा</h2>
+    <button class="btn-write" onclick="writeRadha()">Write Radha</button>
+    
+    <div class="stats-box">
+        <p>Your Total: <b id="uCount" style="font-size: 20px;">0</b></p>
+        <p>Global Bank Total: <b id="gCount" style="font-size: 22px; color: #800000;">0</b></p>
+    </div>
+    
+    <button onclick="logout()" style="background:none; border:none; color:gray; cursor:pointer; margin-top:20px;">Logout</button>
 </div>
 
 <script>
+  // Your Firebase Configuration
   const firebaseConfig = {
     apiKey: "AIzaSyCjWR3iIF07Ohj22bjzv5QIPFKL55t1wB0",
     authDomain: "radha-naam-bank-abec4.firebaseapp.com",
@@ -49,57 +61,66 @@
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
-  let currentUser;
 
-  function signup() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    auth.createUserWithEmailAndPassword(email, password)
-      .then(() => alert("Signup successful! Welcome to the Bank."))
-      .catch(error => alert(error.message));
+  let isSignupMode = false;
+
+  function toggleAuth() {
+    isSignupMode = !isSignupMode;
+    document.getElementById('authTitle').innerText = isSignupMode ? "Create Account" : "Welcome, Devotee";
+    document.getElementById('authBtn').innerText = isSignupMode ? "Signup" : "Login";
+    document.getElementById('toggleLink').innerText = isSignupMode ? "Already have an account? Login" : "New Devotee? Create an Account";
   }
 
-  function login() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    auth.signInWithEmailAndPassword(email, password)
-      .then(() => alert("Login successful!"))
-      .catch(error => alert(error.message));
+  function handleAuth() {
+    const email = document.getElementById('email').value.trim();
+    const pass = document.getElementById('password').value;
+    
+    if(!email || !pass) { alert("Please fill in both Email and Password"); return; }
+    if(pass.length < 6) { alert("Password must be at least 6 characters"); return; }
+
+    if(isSignupMode) {
+        auth.createUserWithEmailAndPassword(email, pass)
+            .then(() => alert("Welcome! Your account is ready."))
+            .catch(err => alert(err.message));
+    } else {
+        auth.signInWithEmailAndPassword(email, pass)
+            .catch(err => alert("Login failed: " + err.message));
+    }
   }
 
-  function logout() {
-    auth.signOut().then(() => location.reload());
-  }
+  function logout() { auth.signOut().then(() => location.reload()); }
 
   auth.onAuthStateChanged(user => {
     if (user) {
-      currentUser = user;
-      document.getElementById("login").style.display = "none";
-      document.getElementById("dashboard").style.display = "block";
-      loadCounts();
+      document.getElementById('authSection').style.display = 'none';
+      document.getElementById('bankSection').style.display = 'block';
+      updateDisplay(user.uid);
     }
   });
 
   async function writeRadha() {
-    const userRef = db.collection("users").doc(currentUser.uid);
-    const globalRef = db.collection("stats").doc("global");
+    const uid = auth.currentUser.uid;
+    const uRef = db.collection("users").doc(uid);
+    const gRef = db.collection("stats").doc("global");
 
-    await db.runTransaction(async (transaction) => {
-      const userDoc = await transaction.get(userRef);
-      const globalDoc = await transaction.get(globalRef);
-      let userCount = userDoc.exists ? userDoc.data().count : 0;
-      let globalCount = globalDoc.exists ? globalDoc.data().count : 0;
-      transaction.set(userRef, { count: userCount + 1 });
-      transaction.set(globalRef, { count: globalCount + 1 });
-    });
-    loadCounts();
+    try {
+        await db.runTransaction(async (t) => {
+          const uDoc = await t.get(uRef);
+          const gDoc = await t.get(gRef);
+          const newVal = (uDoc.exists ? uDoc.data().count : 0) + 1;
+          const newGlobal = (gDoc.exists ? gDoc.data().count : 0) + 1;
+          t.set(uRef, { count: newVal });
+          t.set(gRef, { count: newGlobal });
+        });
+        updateDisplay(uid);
+    } catch(e) { console.error(e); }
   }
 
-  async function loadCounts() {
-    const userDoc = await db.collection("users").doc(currentUser.uid).get();
-    const globalDoc = await db.collection("stats").doc("global").get();
-    document.getElementById("userCount").innerText = userDoc.exists ? userDoc.data().count : 0;
-    document.getElementById("globalCount").innerText = globalDoc.exists ? globalDoc.data().count : 0;
+  async function updateDisplay(uid) {
+    const uDoc = await db.collection("users").doc(uid).get();
+    const gDoc = await db.collection("stats").doc("global").get();
+    document.getElementById('uCount').innerText = uDoc.exists ? uDoc.data().count : 0;
+    document.getElementById('gCount').innerText = gDoc.exists ? gDoc.data().count : 0;
   }
 </script>
 </body>

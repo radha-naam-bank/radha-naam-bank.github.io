@@ -7,17 +7,25 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <style>
-    body { margin: 0; font-family: 'Georgia', serif; background: #fff5e1; text-align: center; color: #4a2c2a; }
-    header { background: #800000; color: gold; padding: 25px; font-size: 32px; border-bottom: 5px solid #d4af37; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    .card { background: white; padding: 30px; margin: 30px auto; width: 320px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e0c097; }
-    h2 { color: #800000; font-size: 60px; margin: 10px 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
-    input { padding: 12px; margin: 10px 0; width: 90%; border: 1px solid #dcc; border-radius: 8px; font-size: 16px; background: #fffaf0; }
-    .btn-primary { padding: 15px 30px; background: #ff9933; border: none; font-size: 18px; color: white; font-weight: bold; border-radius: 10px; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 10px; }
-    .btn-primary:hover { background: #e68a00; transform: scale(1.02); }
-    .btn-write { padding: 25px 50px; background: #800000; color: gold; font-size: 24px; border: 3px solid gold; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 15px rgba(128,0,0,0.3); margin: 20px 0; }
-    .btn-write:active { transform: scale(0.95); }
-    .toggle-text { color: #800000; cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: 15px; display: block; }
-    .stats-box { background: #fdf2d5; padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px dashed #800000; }
+    body { 
+      margin: 0; 
+      font-family: 'Georgia', serif; 
+      /* Sacred Background Image */
+      background: linear-gradient(rgba(255,245,225,0.8), rgba(255,245,225,0.8)), url('https://images.unsplash.com/photo-1583074026213-90926799f91a?q=80&w=1000&auto=format&fit=crop');
+      background-size: cover;
+      background-attachment: fixed;
+      text-align: center; 
+      color: #4a2c2a; 
+    }
+    header { background: #800000; color: gold; padding: 20px; font-size: 32px; border-bottom: 5px solid #d4af37; }
+    .card { background: rgba(255, 255, 255, 0.9); padding: 30px; margin: 20px auto; width: 350px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+    h2 { color: #800000; font-size: 50px; margin: 10px 0; }
+    input { padding: 12px; margin: 10px 0; width: 90%; border: 1px solid #dcc; border-radius: 8px; font-size: 16px; }
+    .btn-primary { padding: 15px; background: #ff9933; border: none; font-size: 18px; color: white; font-weight: bold; border-radius: 10px; cursor: pointer; width: 100%; margin-top: 10px; }
+    .tab-btn { padding: 10px 20px; background: #eee; border: none; cursor: pointer; margin: 5px; border-radius: 5px; }
+    .tab-btn.active { background: #800000; color: white; }
+    .write-area { font-size: 24px; padding: 15px; width: 80%; border: 2px solid #800000; border-radius: 10px; text-align: center; }
+    .hindi-text { font-size: 40px; color: #800000; display: block; height: 50px; margin-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -25,30 +33,41 @@
 <header>🌸 Radha Naam Bank 🌸</header>
 
 <div id="authSection" class="card">
-    <h3 id="authTitle">Welcome, Devotee</h3>
+    <h3 id="authTitle">Devotee Login</h3>
     <input type="email" id="email" placeholder="Email Address">
-    <input type="password" id="password" placeholder="Password (6+ characters)">
-    
+    <input type="password" id="password" placeholder="Password">
     <button id="authBtn" class="btn-primary" onclick="handleAuth()">Login</button>
-    
-    <span id="toggleLink" class="toggle-text" onclick="toggleAuth()">New Devotee? Create an Account</span>
+    <p onclick="toggleAuth()" id="toggleLink" style="cursor:pointer; text-decoration:underline;">New Devotee? Signup</p>
+    <p onclick="forgotPassword()" style="cursor:pointer; color: blue; font-size: 13px;">Forgot Password?</p>
 </div>
 
-<div id="bankSection" class="card" style="display:none;">
-    <p>Chant and Click</p>
-    <h2>राधा</h2>
-    <button class="btn-write" onclick="writeRadha()">Write Radha</button>
-    
-    <div class="stats-box">
-        <p>Your Total: <b id="uCount" style="font-size: 20px;">0</b></p>
-        <p>Global Bank Total: <b id="gCount" style="font-size: 22px; color: #800000;">0</b></p>
+<div id="bankSection" style="display:none;">
+    <div class="card" style="width: 80%; max-width: 500px;">
+        <div id="tabs">
+            <button class="tab-btn active" id="btnTab" onclick="showMode('click')">Click Mode</button>
+            <button class="tab-btn" id="writeTab" onclick="showMode('write')">Writing Mode</button>
+        </div>
+
+        <div id="clickMode">
+            <h2>राधा</h2>
+            <button class="btn-primary" style="background:#800000; width: 200px;" onclick="writeRadha()">Write Radha</button>
+        </div>
+
+        <div id="writeMode" style="display:none;">
+            <span class="hindi-text" id="hindiDisplay"></span>
+            <input type="text" id="radhaInput" class="write-area" placeholder="Type 'Radha' & hit Enter" onkeypress="checkEnter(event)">
+            <p style="font-size: 12px;">Type "Radha" then press Enter key</p>
+        </div>
+
+        <div style="background: #fdf2d5; padding: 15px; border-radius: 10px; margin-top: 20px;">
+            <p>Your Total: <b id="uCount">0</b></p>
+            <p>Global Total: <b id="gCount">0</b></p>
+        </div>
+        <button onclick="logout()" style="margin-top:20px; border:none; background:none; color:gray; cursor:pointer;">Logout</button>
     </div>
-    
-    <button onclick="logout()" style="background:none; border:none; color:gray; cursor:pointer; margin-top:20px;">Logout</button>
 </div>
 
 <script>
-  // Your Firebase Configuration
   const firebaseConfig = {
     apiKey: "AIzaSyCjWR3iIF07Ohj22bjzv5QIPFKL55t1wB0",
     authDomain: "radha-naam-bank-abec4.firebaseapp.com",
@@ -66,29 +85,47 @@
 
   function toggleAuth() {
     isSignupMode = !isSignupMode;
-    document.getElementById('authTitle').innerText = isSignupMode ? "Create Account" : "Welcome, Devotee";
+    document.getElementById('authTitle').innerText = isSignupMode ? "Create Account" : "Devotee Login";
     document.getElementById('authBtn').innerText = isSignupMode ? "Signup" : "Login";
-    document.getElementById('toggleLink').innerText = isSignupMode ? "Already have an account? Login" : "New Devotee? Create an Account";
+    document.getElementById('toggleLink').innerText = isSignupMode ? "Already a Devotee? Login" : "New Devotee? Signup";
+  }
+
+  function forgotPassword() {
+    const email = document.getElementById('email').value;
+    if(!email) { alert("Please enter your email first"); return; }
+    auth.sendPasswordResetEmail(email).then(() => alert("Reset link sent to your email!")).catch(e => alert(e.message));
   }
 
   function handleAuth() {
     const email = document.getElementById('email').value.trim();
     const pass = document.getElementById('password').value;
-    
-    if(!email || !pass) { alert("Please fill in both Email and Password"); return; }
-    if(pass.length < 6) { alert("Password must be at least 6 characters"); return; }
-
-    if(isSignupMode) {
-        auth.createUserWithEmailAndPassword(email, pass)
-            .then(() => alert("Welcome! Your account is ready."))
-            .catch(err => alert(err.message));
-    } else {
-        auth.signInWithEmailAndPassword(email, pass)
-            .catch(err => alert("Login failed: " + err.message));
-    }
+    if(isSignupMode) auth.createUserWithEmailAndPassword(email, pass).catch(e => alert(e.message));
+    else auth.signInWithEmailAndPassword(email, pass).catch(e => alert(e.message));
   }
 
   function logout() { auth.signOut().then(() => location.reload()); }
+
+  function showMode(mode) {
+    document.getElementById('clickMode').style.display = mode === 'click' ? 'block' : 'none';
+    document.getElementById('writeMode').style.display = mode === 'write' ? 'block' : 'none';
+    document.getElementById('btnTab').className = mode === 'click' ? 'tab-btn active' : 'tab-btn';
+    document.getElementById('writeTab').className = mode === 'write' ? 'tab-btn active' : 'tab-btn';
+  }
+
+  function checkEnter(e) {
+    if(e.key === 'Enter') {
+        const val = document.getElementById('radhaInput').value.toLowerCase().trim();
+        if(val === 'radha') {
+            document.getElementById('hindiDisplay').innerText = "राधा";
+            document.getElementById('radhaInput').value = "";
+            writeRadha();
+            setTimeout(() => { document.getElementById('hindiDisplay').innerText = ""; }, 1000);
+        } else {
+            alert("Please type 'Radha' correctly");
+            document.getElementById('radhaInput').value = "";
+        }
+    }
+  }
 
   auth.onAuthStateChanged(user => {
     if (user) {
@@ -102,18 +139,13 @@
     const uid = auth.currentUser.uid;
     const uRef = db.collection("users").doc(uid);
     const gRef = db.collection("stats").doc("global");
-
-    try {
-        await db.runTransaction(async (t) => {
-          const uDoc = await t.get(uRef);
-          const gDoc = await t.get(gRef);
-          const newVal = (uDoc.exists ? uDoc.data().count : 0) + 1;
-          const newGlobal = (gDoc.exists ? gDoc.data().count : 0) + 1;
-          t.set(uRef, { count: newVal });
-          t.set(gRef, { count: newGlobal });
-        });
-        updateDisplay(uid);
-    } catch(e) { console.error(e); }
+    await db.runTransaction(async (t) => {
+        const uDoc = await t.get(uRef);
+        const gDoc = await t.get(gRef);
+        t.set(uRef, { count: (uDoc.exists ? uDoc.data().count : 0) + 1 });
+        t.set(gRef, { count: (gDoc.exists ? gDoc.data().count : 0) + 1 });
+    });
+    updateDisplay(uid);
   }
 
   async function updateDisplay(uid) {
